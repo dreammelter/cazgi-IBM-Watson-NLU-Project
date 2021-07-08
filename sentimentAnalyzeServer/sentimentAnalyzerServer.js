@@ -33,8 +33,30 @@ app.get("/",(req,res)=>{
   });
 
 app.get("/url/emotion", (req,res) => {
-
-    return res.send({"happy":"90","sad":"10"});
+    let NLUProcessor = getNLUInstance()
+    const analyzeParams = {
+        'url': req.query.url,
+        'features': {
+            'emotion': {},
+            'keywords': {
+                'limit': 3,
+                'emotion': true
+            },
+        'version': '2021-03-25',
+        'limitTextCharacters': 250
+        }
+    }
+    
+    NLUProcessor.analyze(analyzeParams)
+    .then(
+        analysisResults => {
+            console.log(JSON.stringify(analysisResults));
+            return res.send(JSON.stringify(analysisResults));
+        }
+    )
+    .catch(err => {
+        console.log('Error: ', err);
+    });
 });
 
 app.get("/url/sentiment", (req,res) => {
@@ -42,7 +64,7 @@ app.get("/url/sentiment", (req,res) => {
 });
 
 app.get("/text/emotion", (req,res) => {
-    return res.send({"happy":"10","sad":"90"});
+    return res.send(/* will be sending JSON i guess */);
 });
 
 app.get("/text/sentiment", (req,res) => {
