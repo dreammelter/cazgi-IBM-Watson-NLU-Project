@@ -46,11 +46,11 @@ class App extends React.Component {
     ret = axios.get(url);
     ret.then((response)=>{
 
-      //Include code here to check the sentiment and fomrat the data accordingly
+      //this.setState({sentimentOutput:response.data});
+      let output = response.data; //so this isn't holding onto the sentiment label already...?
+      let sentimentLabel = output.sentiment.document.label;
 
-      this.setState({sentimentOutput:response.data});
-      let output = response.data;
-      if(response.data === "positive") {
+      if(sentimentLabel === "positive") {
         output = <div style={{color:"green",fontSize:20}}>{response.data}</div>
       } else if (response.data === "negative"){
         output = <div style={{color:"red",fontSize:20}}>{response.data}</div>
