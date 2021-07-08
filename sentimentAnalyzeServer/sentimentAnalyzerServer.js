@@ -56,8 +56,9 @@ app.get("/url/emotion", (req,res) => {
     NLUProcessor.analyze(analyzeParams)
     .then(
         analysisResults => {
-            console.log(JSON.stringify(analysisResults));
+            //console.log(JSON.stringify(analysisResults));
             //return res.send('We made it back - check console!');
+            console.log('We made it back!');
             return res.send(analysisResults.result.emotion.document.emotion);
         }
     )
@@ -86,9 +87,10 @@ app.get("/url/sentiment", (req,res) => {
     NLUProcessor.analyze(analyzeParams)
     .then(
         analysisResults => {
-            console.log(JSON.stringify(analysisResults));
+            //console.log(JSON.stringify(analysisResults));
             //return res.send('We made it back - check console!');
-            return res.send('Sentiment for URL: '+analysisResults.result.sentiment.document.label);
+            console.log('We made it back!');
+            return res.send(analysisResults.result.sentiment.document.label);
         }
     )
     .catch(err => {
@@ -113,8 +115,9 @@ app.get("/text/emotion", (req,res) => {
     NLUProcessor.analyze(analyzeParams)
     .then(
         analysisResults => {
-            console.log(JSON.stringify(analysisResults));
+            //console.log(JSON.stringify(analysisResults));
             //return res.send('We made it back - check console!');
+            console.log('We made it back!');
             return res.send(analysisResults.result.emotion.document.emotion);
         }
     )
@@ -140,9 +143,10 @@ app.get("/text/sentiment", (req,res) => {
     NLUProcessor.analyze(analyzeParams)
     .then(
         analysisResults => {
-            console.log(JSON.stringify(analysisResults));
+            //console.log(JSON.stringify(analysisResults));
             //return res.send('We made it back - check console!');
-            return res.send("Sentiment for text: "+analysisResults.result.sentiment.document.label);
+            console.log('We made it back!');
+            return res.send(analysisResults.result.sentiment.document.label);
         }
     )
     .catch(err => {
