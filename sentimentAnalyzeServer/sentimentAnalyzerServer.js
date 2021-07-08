@@ -114,8 +114,8 @@ app.get("/text/emotion", (req,res) => {
     .then(
         analysisResults => {
             console.log(JSON.stringify(analysisResults));
-            return res.send('We made it back - check console!');
-            //return res.send(analysisResults.result.emotion.document.emotion);
+            //return res.send('We made it back - check console!');
+            return res.send(analysisResults.result.emotion.document.emotion);
         }
     )
     .catch(err => {
@@ -125,7 +125,30 @@ app.get("/text/emotion", (req,res) => {
 });
 
 app.get("/text/sentiment", (req,res) => {
-    return res.send("text sentiment for "+req.query.text);
+    let NLUProcessor = getNLUInstance();
+    let TxttoProcess = req.query.text;
+
+    const analyzeParams = {
+        'text': TxttoProcess,
+        'features': {
+            'sentiment': {},
+        },
+        'limitTextCharacters': 250,
+    }
+    
+    console.log("Gonna try analyzing it now...")
+    NLUProcessor.analyze(analyzeParams)
+    .then(
+        analysisResults => {
+            console.log(JSON.stringify(analysisResults));
+            //return res.send('We made it back - check console!');
+            return res.send("Sentiment for text: "+analysisResults.result.sentiment.document.label);
+        }
+    )
+    .catch(err => {
+        console.log('Welp - there was an error:', err);
+        return res.send('There was an error. :(')
+    });
 });
 
 let server = app.listen(8080, () => {
