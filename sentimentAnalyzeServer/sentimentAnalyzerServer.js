@@ -14,9 +14,9 @@ function getNLUInstance() {
     const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1 ({
         version: '2021-03-25',
         authenticator: new IamAuthenticator({
-            apikey: api_key
+            apikey: api_key,
         }),
-        serviceUrl: api_url
+        serviceUrl: api_url,
     });
 
     //this is a getter so return the thing we want pls
@@ -33,38 +33,95 @@ app.get("/",(req,res)=>{
   });
 
 app.get("/url/emotion", (req,res) => {
-    let NLUProcessor = getNLUInstance()
+    let NLUProcessor = getNLUInstance();
+    let UrltoProcess = req.query.url;
+    console.log("URL to Process: "+UrltoProcess);
+
     const analyzeParams = {
-        'url': req.query.url,
+        'url': UrltoProcess,
         'features': {
-            'emotion': {},
-            'keywords': {
+            'emotion': {
+                'document': true
+            },
+            /*'keywords': {
                 'limit': 3,
                 'emotion': true
             },
-        'version': '2021-03-25',
-        'limitTextCharacters': 250
+        //'version': '2021-03-25',
+        //'limitTextCharacters': 250*/
         }
     }
     
+    console.log("Gonna try analyzing it now...")
     NLUProcessor.analyze(analyzeParams)
     .then(
         analysisResults => {
             console.log(JSON.stringify(analysisResults));
-            return res.send(JSON.stringify(analysisResults));
+            //return res.send('We made it back - check console!');
+            return res.send(analysisResults.result.emotion.document.emotion);
         }
     )
     .catch(err => {
-        console.log('Error: ', err);
+        console.log('Welp - there was an error:', err);
+        return res.send('There was an error. :(')
     });
+    //return res.send('testing these data types and formats...');
 });
 
 app.get("/url/sentiment", (req,res) => {
-    return res.send("url sentiment for "+req.query.url);
+    let NLUProcessor = getNLUInstance();
+    let UrltoProcess = req.query.url;
+    console.log("URL to Process: "+UrltoProcess);
+
+    const analyzeParams = {
+        'url': UrltoProcess,
+        'features': {
+            'sentiment': {
+                'document': true
+            },
+        }
+    }
+    
+    console.log("Gonna try analyzing it now...")
+    NLUProcessor.analyze(analyzeParams)
+    .then(
+        analysisResults => {
+            console.log(JSON.stringify(analysisResults));
+            //return res.send('We made it back - check console!');
+            return res.send('Sentiment for URL: '+analysisResults.result.sentiment.document.label);
+        }
+    )
+    .catch(err => {
+        console.log('Welp - there was an error:', err);
+        return res.send('There was an error. :(')
+    });
 });
 
 app.get("/text/emotion", (req,res) => {
-    return res.send(/* will be sending JSON i guess */);
+    let NLUProcessor = getNLUInstance();
+    let TxttoProcess = req.query.text;
+
+    const analyzeParams = {
+        'text': TxttoProcess,
+        'features': {
+            'emotion': {},
+        },
+        'limitTextCharacters': 250,
+    }
+    
+    console.log("Gonna try analyzing it now...")
+    NLUProcessor.analyze(analyzeParams)
+    .then(
+        analysisResults => {
+            console.log(JSON.stringify(analysisResults));
+            return res.send('We made it back - check console!');
+            //return res.send(analysisResults.result.emotion.document.emotion);
+        }
+    )
+    .catch(err => {
+        console.log('Welp - there was an error:', err);
+        return res.send('There was an error. :(')
+    });
 });
 
 app.get("/text/sentiment", (req,res) => {
